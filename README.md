@@ -310,9 +310,11 @@ df_final_sub |>
 
 ![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
+With the `720` wavelength
+
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -322,6 +324,22 @@ df_final_sub |>
     ## `geom_smooth()` using formula 'y ~ x'
 
 ![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
+df_final_sub |>
+  dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
+  ggplot2::geom_smooth(method = "lm")+
+  ggpubr::stat_regline_equation(ggplot2::aes(
+  label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
+```
+
+    ## `geom_smooth()` using formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+With the other two selected waves
 
 ``` r
 df_final_sub |> 
@@ -334,7 +352,7 @@ df_final_sub |>
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 df_final_sub |> 
@@ -347,7 +365,7 @@ df_final_sub |>
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 df_final_sub |> 
@@ -362,7 +380,7 @@ df_final_sub |>
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 df_final_sub |> 
@@ -377,7 +395,7 @@ df_final_sub |>
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 # **Clounds and reflectance**
 
@@ -396,99 +414,99 @@ for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-4.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-5.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-5.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-6.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-6.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-7.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-7.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-8.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-8.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-9.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-9.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-10.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-10.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-11.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-11.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-12.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-12.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-13.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-13.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-14.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-14.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-15.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-15.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-16.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-16.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-17.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-17.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-18.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-18.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-19.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-19.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-20.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-20.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-21.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-21.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-22.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-22.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-23.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-23.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-21-24.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-24.png)<!-- -->
 
 Here we are gonna see how the reflectance of the canopy are changing,
 and for this we are gonna use the NDVI and NDVI red-edge
@@ -614,7 +632,7 @@ ndvi |>
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ## **NDVI Red Edge**
 
@@ -627,7 +645,7 @@ ndvi_r |>
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 # **Interpreting**
 

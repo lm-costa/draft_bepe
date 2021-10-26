@@ -288,14 +288,29 @@ df_final_sub |>
   
 ```
 
+With the `720` wavelength
+
 ```{r}
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
+
+```{r}
+df_final_sub |>
+  dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
+  ggplot2::geom_smooth(method = "lm")+
+  ggpubr::stat_regline_equation(ggplot2::aes(
+  label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
+  
+```
+
+With the other two selected waves
 
 ```{r}
 
