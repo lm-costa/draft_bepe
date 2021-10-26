@@ -158,23 +158,7 @@ df_final <- cbind(df_final,fint)
 
 ```
 
-Before going plot the data, first we are gonna make a subset for some variables
-
-```{r,echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
-df_final_sub <- df_final |>
-  dplyr::select(
-    Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.43`,`743.82`, Fint,
-    FCO2,ET,NEE,Tair,Tsoil,NEE_orig,rH_orig,
-    GPP_f, GPP_U05_f, GPP_U50_f,GPP_U95_f, GPP_DT, GPP_DT_SD,
-    GPP_DT_U95, GPP_DT_U95_SD, GPP_DT_U50, GPP_DT_U50_SD,GPP_DT_U05, GPP_DT_U05_SD
-
-  ) |> 
-  dplyr::glimpse()
-
-```
-
-Also we need another transformations to a correlation plot for all the Fluoresce spectra
+Before going plot the data, first we need another transformations to do a correlation plot for all the Fluoresce spectra
 
 ```{r}
 fint_t <- vector("numeric", length = 377)
@@ -225,14 +209,9 @@ correl[,2] <- spectra_Table$spectra
 
 # **Plots**
 
-## **Correlation heat-map**
+## **Correlations plots**
 
-```{r,echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
-df_final_sub[,-1] |>
-  cor(use = "p") |>
-  corrplot::corrplot()
-
-```
+### **Corellation for the whole spectra**
 
 Ploting correlation in the Fluoresce spectra, without F integral. `F integral r = 0.65`
 
@@ -243,10 +222,28 @@ correl[-c(683:684),] |>
   ggplot2::xlab(label="Fluorescence Spectra in nm")
 ```
 
+Now we can subset the data frame for the most **importants wavelength**, `685nm`,`720nm`, `740nm` and `F integral`, and with the `GPP` data include for the `Day Time (DT)` observations
+
+```{r,echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
+df_final_sub <- df_final |>
+  dplyr::select(
+    Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
+    `685.43`,`720.07` ,`743.82`, Fint,
+    GPP_DT, GPP_DT_U95, GPP_DT_U50,GPP_DT_U05
+  ) |> 
+  dplyr::glimpse()
+
+```
+
+```{r,echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
+df_final_sub[,-c(1:3)] |> #excluding the time for the Pearson correlation 
+  cor(use = "p") |>
+  corrplot::corrplot()
+
+```
+
 
 ## **Changes in the the wavelegnt over time**
-
-
 
 ```{r}
 
@@ -276,6 +273,9 @@ df_final_sub |>
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
   
 ```
+
+Controlling by the hours between 11:00 AM and 01:00 PM
+
 ```{r}
 
 df_final_sub |>
@@ -286,6 +286,15 @@ df_final_sub |>
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
   
+```
+
+```{r}
+df_final_sub |> 
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
+  ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
+  ggplot2::geom_smooth(method = "lm")+
+  ggpubr::stat_regline_equation(ggplot2::aes(
+  label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
 
 ```{r}
@@ -316,11 +325,22 @@ df_final_sub |>
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
-  ggplot2::facet_wrap(~day)+
+  ggplot2::facet_wrap(~day, scales = "free")+
   ggplot2::theme_classic()+
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..rr.label..)))
-  
+```
+
+```{r}
+
+df_final_sub |> 
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::geom_point()+
+  ggplot2::geom_smooth(method = "lm")+
+  ggplot2::facet_wrap(~day, scales = "free")+
+  ggplot2::theme_classic()+
+  ggpubr::stat_regline_equation(ggplot2::aes(
+  label =  paste(..rr.label..)))
 ```
 
 # **Clounds and reflectance**

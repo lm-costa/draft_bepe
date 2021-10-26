@@ -157,55 +157,8 @@ colnames(fint) <- "Fint"
 df_final <- cbind(df_final,fint)
 ```
 
-Before going plot the data, first we are gonna make a subset for some
-variables
-
-``` r
-df_final_sub <- df_final |>
-  dplyr::select(
-    Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.43`,`743.82`, Fint,
-    FCO2,ET,NEE,Tair,Tsoil,NEE_orig,rH_orig,
-    GPP_f, GPP_U05_f, GPP_U50_f,GPP_U95_f, GPP_DT, GPP_DT_SD,
-    GPP_DT_U95, GPP_DT_U95_SD, GPP_DT_U50, GPP_DT_U50_SD,GPP_DT_U05, GPP_DT_U05_SD
-
-  ) |> 
-  dplyr::glimpse()
-```
-
-    ## Rows: 376
-    ## Columns: 28
-    ## $ Group.1        <fct> 2018-05-12 09:00:12, 2018-05-12 09:30:12, 2018-05-12 10~
-    ## $ day            <dbl> 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, ~
-    ## $ Hr1            <int> 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 1~
-    ## $ L750_Wm2nm1sr1 <dbl> 0.30742885, 0.32451641, 0.33455608, 0.34120232, 0.34359~
-    ## $ SZA            <dbl> 34.95596, 30.81628, 27.45133, 25.35580, 24.71953, 25.69~
-    ## $ PAR_Wm2        <dbl> 364.37724, 387.53816, 403.78000, 413.90729, 417.90639, ~
-    ## $ `685.43`       <dbl> 1.0169006, 1.0777418, 1.0466246, 1.0804593, 1.0836567, ~
-    ## $ `743.82`       <dbl> 4.089323, 4.242339, 4.425685, 4.502813, 4.481843, 4.436~
-    ## $ Fint           <dbl> 228.78261, 238.46129, 245.18687, 250.34240, 249.73322, ~
-    ## $ FCO2           <dbl> -7.08e-07, -6.87e-07, -6.93e-07, -5.58e-07, -5.08e-07, ~
-    ## $ ET             <dbl> NA, NA, 0.000122369, NA, NA, NA, 0.000097600, NA, NA, N~
-    ## $ NEE            <dbl> -16.1000, -15.6000, -15.7000, -12.7000, -11.6000, -13.3~
-    ## $ Tair           <dbl> NA, NA, 19.9099, NA, NA, NA, 22.9810, NA, NA, NA, NA, N~
-    ## $ Tsoil          <dbl> NA, NA, 21.8680, NA, NA, NA, 24.3686, NA, NA, NA, NA, N~
-    ## $ NEE_orig       <dbl> -16.0820, -15.6160, -15.7490, -12.6750, -11.5520, -13.3~
-    ## $ rH_orig        <dbl> 82.8187, 81.1107, 73.8973, 72.4677, 70.3815, 66.6237, 6~
-    ## $ GPP_f          <dbl> 24.7, 24.6, 24.5, 22.0, 21.3, 23.2, 20.3, 18.2, 20.4, 1~
-    ## $ GPP_U05_f      <dbl> 23.7, 23.6, 23.6, 21.0, 20.2, 22.1, 19.2, 17.2, 19.4, 1~
-    ## $ GPP_U50_f      <dbl> 24.6, 24.4, 24.4, 21.8, 21.1, 23.0, 20.1, 18.0, 20.2, 1~
-    ## $ GPP_U95_f      <dbl> 26.1, 26.1, 26.0, 23.7, 23.1, 25.1, 22.1, 19.6, 22.0, 1~
-    ## $ GPP_DT         <dbl> 18.8, 19.5, 20.1, 20.5, 20.5, 20.5, 20.8, 19.3, 20.2, 1~
-    ## $ GPP_DT_SD      <dbl> 1.4265, 1.4120, 1.3955, 1.3790, 1.3648, 1.3516, 1.3411,~
-    ## $ GPP_DT_U95     <dbl> 18.7, 19.4, 20.1, 20.5, 20.4, 20.5, 20.8, 19.2, 20.1, 1~
-    ## $ GPP_DT_U95_SD  <dbl> 1.8851, 1.8744, 1.8599, 1.8431, 1.8264, 1.8102, 1.7953,~
-    ## $ GPP_DT_U50     <dbl> 17.8, 18.5, 19.1, 19.5, 19.5, 19.6, 19.8, 18.3, 19.2, 1~
-    ## $ GPP_DT_U50_SD  <dbl> 1.8059, 1.7984, 1.7868, 1.7726, 1.7575, 1.7427, 1.7285,~
-    ## $ GPP_DT_U05     <dbl> 19.1, 19.8, 20.4, 20.7, 20.7, 20.8, 21.0, 19.6, 20.4, 1~
-    ## $ GPP_DT_U05_SD  <dbl> 1.2953, 1.2757, 1.2553, 1.2366, 1.2223, 1.2097, 1.2013,~
-
-Also we need another transformations to a correlation plot for all the
-Fluoresce spectra
+Before going plot the data, first we need another transformations to do
+a correlation plot for all the Fluoresce spectra
 
 ``` r
 fint_t <- vector("numeric", length = 377)
@@ -254,15 +207,9 @@ correl[,2] <- spectra_Table$spectra
 
 # **Plots**
 
-## **Correlation heat-map**
+## **Correlations plots**
 
-``` r
-df_final_sub[,-1] |>
-  cor(use = "p") |>
-  corrplot::corrplot()
-```
-
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+### **Corellation for the whole spectra**
 
 Ploting correlation in the Fluoresce spectra, without F integral.
 `F integral r = 0.65`
@@ -272,6 +219,45 @@ correl[-c(683:684),] |>
   ggplot2::ggplot(ggplot2::aes(x=as.numeric(V2), y = cor))+
   ggplot2::geom_point()+
   ggplot2::xlab(label="Fluorescence Spectra in nm")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+Now we can subset the data frame for the most **importants wavelength**,
+`685nm`,`720nm`, `740nm` and `F integral`, and with the `GPP` data
+include for the `Day Time (DT)` observations
+
+``` r
+df_final_sub <- df_final |>
+  dplyr::select(
+    Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
+    `685.43`,`720.07` ,`743.82`, Fint,
+    GPP_DT, GPP_DT_U95, GPP_DT_U50,GPP_DT_U05
+  ) |> 
+  dplyr::glimpse()
+```
+
+    ## Rows: 376
+    ## Columns: 14
+    ## $ Group.1        <fct> 2018-05-12 09:00:12, 2018-05-12 09:30:12, 2018-05-12 10~
+    ## $ day            <dbl> 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, ~
+    ## $ Hr1            <int> 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 1~
+    ## $ L750_Wm2nm1sr1 <dbl> 0.30742885, 0.32451641, 0.33455608, 0.34120232, 0.34359~
+    ## $ SZA            <dbl> 34.95596, 30.81628, 27.45133, 25.35580, 24.71953, 25.69~
+    ## $ PAR_Wm2        <dbl> 364.37724, 387.53816, 403.78000, 413.90729, 417.90639, ~
+    ## $ `685.43`       <dbl> 1.0169006, 1.0777418, 1.0466246, 1.0804593, 1.0836567, ~
+    ## $ `720.07`       <dbl> 1.7525774, 1.8323982, 1.8706490, 1.9075834, 1.9054034, ~
+    ## $ `743.82`       <dbl> 4.089323, 4.242339, 4.425685, 4.502813, 4.481843, 4.436~
+    ## $ Fint           <dbl> 228.78261, 238.46129, 245.18687, 250.34240, 249.73322, ~
+    ## $ GPP_DT         <dbl> 18.8, 19.5, 20.1, 20.5, 20.5, 20.5, 20.8, 19.3, 20.2, 1~
+    ## $ GPP_DT_U95     <dbl> 18.7, 19.4, 20.1, 20.5, 20.4, 20.5, 20.8, 19.2, 20.1, 1~
+    ## $ GPP_DT_U50     <dbl> 17.8, 18.5, 19.1, 19.5, 19.5, 19.6, 19.8, 18.3, 19.2, 1~
+    ## $ GPP_DT_U05     <dbl> 19.1, 19.8, 20.4, 20.7, 20.7, 20.8, 21.0, 19.6, 20.4, 1~
+
+``` r
+df_final_sub[,-c(1:3)] |> #excluding the time for the Pearson correlation 
+  cor(use = "p") |>
+  corrplot::corrplot()
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
@@ -308,6 +294,8 @@ df_final_sub |>
 
 ![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
+Controlling by the hours between 11:00 AM and 01:00 PM
+
 ``` r
 df_final_sub |>
   dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
@@ -324,8 +312,8 @@ df_final_sub |>
 
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.82`))+
-  ggplot2::geom_point()+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
+  ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
@@ -337,7 +325,7 @@ df_final_sub |>
 
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.43`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.82`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -350,10 +338,23 @@ df_final_sub |>
 
 ``` r
 df_final_sub |> 
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.43`))+
+  ggplot2::geom_point()+
+  ggplot2::geom_smooth(method = "lm")+
+  ggpubr::stat_regline_equation(ggplot2::aes(
+  label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
+```
+
+    ## `geom_smooth()` using formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
-  ggplot2::facet_wrap(~day)+
+  ggplot2::facet_wrap(~day, scales = "free")+
   ggplot2::theme_classic()+
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..rr.label..)))
@@ -361,7 +362,22 @@ df_final_sub |>
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+``` r
+df_final_sub |> 
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::geom_point()+
+  ggplot2::geom_smooth(method = "lm")+
+  ggplot2::facet_wrap(~day, scales = "free")+
+  ggplot2::theme_classic()+
+  ggpubr::stat_regline_equation(ggplot2::aes(
+  label =  paste(..rr.label..)))
+```
+
+    ## `geom_smooth()` using formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 # **Clounds and reflectance**
 
@@ -380,99 +396,99 @@ for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-2.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-3.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-4.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-4.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-5.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-5.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-6.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-6.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-7.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-7.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-8.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-8.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-9.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-9.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-10.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-10.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-11.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-11.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-12.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-12.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-13.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-13.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-14.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-14.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-15.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-15.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-16.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-16.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-17.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-17.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-18.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-18.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-19.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-19.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-20.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-20.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-21.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-21.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-22.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-22.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-23.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-23.png)<!-- -->
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-19-24.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-24.png)<!-- -->
 
 Here we are gonna see how the reflectance of the canopy are changing,
 and for this we are gonna use the NDVI and NDVI red-edge
@@ -598,7 +614,7 @@ ndvi |>
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## **NDVI Red Edge**
 
@@ -611,7 +627,7 @@ ndvi_r |>
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 # **Interpreting**
 
