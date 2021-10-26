@@ -35,6 +35,11 @@ Now we are keeping going from here with the `.rds` file
 ```{r, echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
 namefile <- list.files("data-raw/", pattern = "_F_")
 ori_tab <- readr::read_rds(paste0("data-raw/",namefile))
+names(ori_tab) <- c("DOY",
+               round(
+                 as.numeric(names(ori_tab)[2:length(ori_tab)]), 2)
+)
+
 ```
 
 Reading the Index file
@@ -159,7 +164,7 @@ Before going plot the data, first we are gonna make a subset for some variables
 df_final_sub <- df_final |>
   dplyr::select(
     Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.427527917867`,`743.81631095515`, Fint,
+    `685.43`,`743.82`, Fint,
     FCO2,ET,NEE,Tair,Tsoil,NEE_orig,rH_orig,
     GPP_f, GPP_U05_f, GPP_U50_f,GPP_U95_f, GPP_DT, GPP_DT_SD,
     GPP_DT_U95, GPP_DT_U95_SD, GPP_DT_U50, GPP_DT_U50_SD,GPP_DT_U05, GPP_DT_U05_SD
@@ -239,37 +244,25 @@ correl[-c(683:684),] |>
 ```
 
 
-## **Loop for se changes in the wave curve**
+## **Changes in the the wavelegnt over time**
 
-I just gonna do 4 plots, but you can apply this for any number
 
-```{r}
-# starts from 2 because the first column is the spectra 
-
-for(i in 2:4){
-  print(spectra_Table|>
-          dplyr::filter(spectra != 0) |> 
-          ggplot2::ggplot(ggplot2::aes(x= spectra,
-                                       y =as.numeric(spectra_Table[-c(683:684),i])
-                                       ))+
-          ggplot2::geom_point()+
-          ggplot2::theme_bw())
-}
-```
-
-## **Loop for the change in time for the wavelenght**
 
 ```{r}
 
-for(i in 7:9){
-  print(time_agg |>
-          ggplot2::ggplot(ggplot2::aes(x= UTC_datetime,
-                                       y = time_agg[,i]))+
-          ggplot2::geom_point()+
-          ggplot2::geom_smooth()+
-          ggplot2::theme_bw())
-}
+time_agg |> 
+  tidyr::pivot_longer(
+    cols = "669.98":"779.96",
+    names_to = "wavelength",
+    values_to = "Fluorescence") |> 
+  ggplot2::ggplot(ggplot2::aes(x=as.numeric(wavelength), y=Fluorescence, color=DOYdayfrac)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line()+
+  ggplot2::facet_wrap(~day)+
+  ggplot2::xlab(label="Wavelength") 
+
 ```
+
 
 ## **Regressions**
 
@@ -298,7 +291,7 @@ df_final_sub |>
 ```{r}
 
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.81631095515`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.82`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -309,7 +302,7 @@ df_final_sub |>
 ```{r}
 
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.427527917867`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.43`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
