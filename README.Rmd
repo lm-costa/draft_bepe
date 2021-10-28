@@ -245,7 +245,7 @@ df_final_sub[,-c(1:3)] |> #excluding the time for the Pearson correlation
 
 ## **Changes in the the wavelegnt over time**
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 time_agg |> 
   tidyr::pivot_longer(
@@ -263,7 +263,7 @@ time_agg |>
 
 ## **Regressions**
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
@@ -276,7 +276,7 @@ df_final_sub |>
 
 Controlling by the hours between 11:00 AM and 01:00 PM
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |>
   dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
@@ -290,7 +290,7 @@ df_final_sub |>
 
 With the `720` wavelength
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
@@ -299,7 +299,7 @@ df_final_sub |>
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 df_final_sub |>
   dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
@@ -312,7 +312,7 @@ df_final_sub |>
 
 With the other two selected waves
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.82`))+
@@ -323,7 +323,7 @@ df_final_sub |>
   
 ```
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.43`))+
@@ -334,7 +334,7 @@ df_final_sub |>
 
 ```
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= Fint))+
@@ -346,7 +346,7 @@ df_final_sub |>
   label =  paste(..rr.label..)))
 ```
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
   ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
@@ -362,7 +362,7 @@ df_final_sub |>
 
 Detection of clounds using the incoming radiance at 750
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
            199,200,201,217,218,221,224,239,240)){
@@ -377,7 +377,7 @@ for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
 
 Here we are gonna see how the reflectance of the canopy are changing, and for this we are gonna use the NDVI and NDVI red-edge 
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 rfile <- list.files("data-raw/", pattern = "_R_")
 rtab <- readr::read_rds(paste0("data-raw/",rfile))
 
@@ -388,7 +388,7 @@ rspec <- rspec[-1, ]
 ```
 
 Using only the bands that are necessary
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 rnir <- rspec[c(616:682),]
 rnir_spec <- as.numeric(rownames(rnir))
 rnir <- cbind(rnir_spec,rnir)
@@ -405,7 +405,7 @@ redge <- cbind(redge_spec,redge)
 
 doing the integral for these bands
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 rnir_result <- vector("list", length = ncol(rnir))
 rred_result <- vector("list", length = ncol(rred))
 redge_result <- vector("list", length = ncol(redge))
@@ -466,7 +466,7 @@ redge_int <- as.data.frame(redge_int)
 
 Now the formula for the both ndvi
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 ndvi <- (rnir_int - rred_int)/(rnir_int+rred_int)
 colnames(ndvi) <- "NDVI"
 
@@ -492,7 +492,7 @@ And Finaly the plots to see the changes
 
 ## **NDVI**
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 ndvi |>
   ggplot2::ggplot(ggplot2::aes(x=day, y=ndvi))+
   ggplot2::geom_jitter()+
@@ -505,7 +505,7 @@ ndvi |>
 
 ## **NDVI Red Edge**
 
-```{r}
+```{r,message=FALSE, error=FALSE, warning=FALSE}
 ndvi_r |>
   ggplot2::ggplot(ggplot2::aes(x=day, y=ndvi_r))+
   ggplot2::geom_jitter()+
