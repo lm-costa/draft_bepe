@@ -231,23 +231,25 @@ include for the `Day Time (DT)` observations
 df_final_sub <- df_final |>
   dplyr::select(
     Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.43`,`720.07` ,`743.82`, Fint,
+    `685.09`,`720.07` ,`740.02`,`757.11`, `771.06`, Fint,
     GPP_DT, GPP_DT_U95, GPP_DT_U50,GPP_DT_U05
   ) |> 
   dplyr::glimpse()
 ```
 
     ## Rows: 376
-    ## Columns: 14
+    ## Columns: 16
     ## $ Group.1        <fct> 2018-05-12 09:00:12, 2018-05-12 09:30:12, 2018-05-12 10~
     ## $ day            <dbl> 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, ~
     ## $ Hr1            <int> 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 1~
     ## $ L750_Wm2nm1sr1 <dbl> 0.30742885, 0.32451641, 0.33455608, 0.34120232, 0.34359~
     ## $ SZA            <dbl> 34.95596, 30.81628, 27.45133, 25.35580, 24.71953, 25.69~
     ## $ PAR_Wm2        <dbl> 364.37724, 387.53816, 403.78000, 413.90729, 417.90639, ~
-    ## $ `685.43`       <dbl> 1.0169006, 1.0777418, 1.0466246, 1.0804593, 1.0836567, ~
+    ## $ `685.09`       <dbl> 1.0165314, 1.0772118, 1.0459857, 1.0797781, 1.0829513, ~
     ## $ `720.07`       <dbl> 1.7525774, 1.8323982, 1.8706490, 1.9075834, 1.9054034, ~
-    ## $ `743.82`       <dbl> 4.089323, 4.242339, 4.425685, 4.502813, 4.481843, 4.436~
+    ## $ `740.02`       <dbl> 3.981080, 4.131573, 4.304486, 4.375986, 4.355232, 4.310~
+    ## $ `757.11`       <dbl> 3.3229948, 3.4471333, 3.5941525, 3.6664658, 3.6524350, ~
+    ## $ `771.06`       <dbl> 2.1862727, 2.2691116, 2.3591218, 2.4113347, 2.4044206, ~
     ## $ Fint           <dbl> 228.78261, 238.46129, 245.18687, 250.34240, 249.73322, ~
     ## $ GPP_DT         <dbl> 18.8, 19.5, 20.1, 20.5, 20.5, 20.5, 20.8, 19.3, 20.2, 1~
     ## $ GPP_DT_U95     <dbl> 18.7, 19.4, 20.1, 20.5, 20.4, 20.5, 20.8, 19.2, 20.1, 1~
@@ -290,8 +292,6 @@ df_final_sub |>
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
 
-    ## `geom_smooth()` using formula 'y ~ x'
-
 ![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Controlling by the hours between 11:00 AM and 01:00 PM
@@ -306,8 +306,6 @@ df_final_sub |>
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
 
-    ## `geom_smooth()` using formula 'y ~ x'
-
 ![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 With the `720` wavelength
@@ -321,8 +319,6 @@ df_final_sub |>
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
 
-    ## `geom_smooth()` using formula 'y ~ x'
-
 ![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
@@ -335,35 +331,29 @@ df_final_sub |>
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
 
-    ## `geom_smooth()` using formula 'y ~ x'
-
 ![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 With the other two selected waves
 
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.82`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `740.02`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
-
-    ## `geom_smooth()` using formula 'y ~ x'
 
 ![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.43`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.09`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~~")))
 ```
-
-    ## `geom_smooth()` using formula 'y ~ x'
 
 ![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
@@ -378,8 +368,6 @@ df_final_sub |>
   label =  paste(..rr.label..)))
 ```
 
-    ## `geom_smooth()` using formula 'y ~ x'
-
 ![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
@@ -392,8 +380,6 @@ df_final_sub |>
   ggpubr::stat_regline_equation(ggplot2::aes(
   label =  paste(..rr.label..)))
 ```
-
-    ## `geom_smooth()` using formula 'y ~ x'
 
 ![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
@@ -412,101 +398,7 @@ for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
   }
 ```
 
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-5.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-6.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-7.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-8.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-9.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-10.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-11.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-12.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-13.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-14.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-15.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-16.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-17.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-18.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-19.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-20.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-21.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-22.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-23.png)<!-- -->
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](README_files/figure-gfm/unnamed-chunk-22-24.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-5.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-6.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-7.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-8.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-9.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-10.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-11.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-12.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-13.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-14.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-15.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-16.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-17.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-18.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-19.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-20.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-21.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-22.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-23.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-24.png)<!-- -->
 
 Here we are gonna see how the reflectance of the canopy are changing,
 and for this we are gonna use the NDVI and NDVI red-edge
@@ -558,6 +450,7 @@ for(i in 1:length(rnir_result)){
     rnir_int <- as.data.frame(rnir_int)
   }
 }
+
 rnir_int <- rnir_int[-1,]
 rnir_int <- as.data.frame(rnir_int)
 
@@ -608,44 +501,67 @@ colnames(ndvi_r) <- "NDVI Red"
 
 rtab <- cbind(rtab,ndvi,ndvi_r)
 
-ndvi <- rtab |>
+mean_ndvi <- rtab |>
   dplyr::mutate(day = DOY%/%1) |>
   dplyr::group_by(day) |>
   dplyr::summarise(ndvi = mean(NDVI))
 
-ndvi_r <- rtab |>
+mean_ndvi_r <- rtab |>
   dplyr::mutate(day = DOY%/%1) |>
   dplyr::group_by(day) |>
   dplyr::summarise(ndvi_r = mean(`NDVI Red`))
 ```
+
+We also are gonna need the NDVI aggregated, so now we are gonna do the
+same process with this data
+
+``` r
+rtab <- cbind(ind_file,rtab)
+rtab <- rtab |>
+  dplyr::filter(lubridate::hour(rtab$UTC_datetime) > 8)
+
+ndvi_agg <- aggregate(x = rtab,
+                      by = list(cut(as.POSIXct(rtab$UTC_datetime,tz = "UTC"),
+                                    timetoagg)), FUN = mean)
+
+ndvi_agg <- ndvi_agg |> dplyr::mutate(day = DOY%/%1,
+                                      Hr1 = lubridate::hour(as.character(Group.1)),
+                                      Mn1 = lubridate::minute(as.character(Group.1)))
+
+ndvi_agg <- ndvi_agg[,-7] 
+
+comp_ndvi_gpp <- dplyr::semi_join(ndvi_agg,gpp_table)
+```
+
+    ## Joining, by = c("day", "Hr1", "Mn1")
 
 And Finaly the plots to see the changes
 
 ## **NDVI**
 
 ``` r
-ndvi |>
+mean_ndvi |>
   ggplot2::ggplot(ggplot2::aes(x=day, y=ndvi))+
   ggplot2::geom_jitter()+
-  ggplot2::geom_point(data = subset(ndvi, ndvi< 0.9),
+  ggplot2::geom_point(data = subset(mean_ndvi, ndvi< 0.9),
                       ggplot2::aes(x=day,y=ndvi)
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 ## **NDVI Red Edge**
 
 ``` r
-ndvi_r |>
+mean_ndvi_r |>
   ggplot2::ggplot(ggplot2::aes(x=day, y=ndvi_r))+
   ggplot2::geom_jitter()+
-  ggplot2::geom_point(data = subset(ndvi_r, ndvi_r< 0.59),
+  ggplot2::geom_point(data = subset(mean_ndvi_r, ndvi_r< 0.59),
                       ggplot2::aes(x=day,y=ndvi_r)
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 # **Interpreting**
 
@@ -654,3 +570,16 @@ problems and the most provable cause, this days we are gonna exclud for
 our analyses.
 
 <img src="data/fig/Imagem1.png" width="1000px" style="display: block; margin: auto;" />
+
+``` r
+NDVI <- comp_ndvi_gpp$NDVI
+NDVI_R <- comp_ndvi_gpp$`NDVI Red`
+ndvi_df <- data.frame(NDVI,NDVI_R)
+df_final_sub <- cbind(df_final_sub,ndvi_df)
+
+df_tab <- df_final_sub |>
+  dplyr::filter(day != 171 & day !=177 & day !=188 & day != 189
+                & day !=199 & day != 200 & day != 201)
+
+readr::write_rds(df_tab,"data/base.rds")
+```

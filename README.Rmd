@@ -228,7 +228,7 @@ Now we can subset the data frame for the most **importants wavelength**, `685nm`
 df_final_sub <- df_final |>
   dplyr::select(
     Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.43`,`720.07` ,`743.82`, Fint,
+    `685.09`,`720.07` ,`740.02`,`757.11`, `771.06`, Fint,
     GPP_DT, GPP_DT_U95, GPP_DT_U50,GPP_DT_U05
   ) |> 
   dplyr::glimpse()
@@ -315,7 +315,7 @@ With the other two selected waves
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `743.82`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `740.02`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -326,7 +326,7 @@ df_final_sub |>
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.43`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `685.09`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -424,6 +424,7 @@ for(i in 1:length(rnir_result)){
     rnir_int <- as.data.frame(rnir_int)
   }
 }
+
 rnir_int <- rnir_int[-1,]
 rnir_int <- as.data.frame(rnir_int)
 
@@ -475,28 +476,49 @@ colnames(ndvi_r) <- "NDVI Red"
 
 rtab <- cbind(rtab,ndvi,ndvi_r)
 
-ndvi <- rtab |>
+mean_ndvi <- rtab |>
   dplyr::mutate(day = DOY%/%1) |>
   dplyr::group_by(day) |>
   dplyr::summarise(ndvi = mean(NDVI))
 
-ndvi_r <- rtab |>
+mean_ndvi_r <- rtab |>
   dplyr::mutate(day = DOY%/%1) |>
   dplyr::group_by(day) |>
   dplyr::summarise(ndvi_r = mean(`NDVI Red`))
 
 ```
 
+We also are gonna need the NDVI aggregated, so now we are gonna do the same process with this data
+
+```{r}
+
+rtab <- cbind(ind_file,rtab)
+rtab <- rtab |>
+  dplyr::filter(lubridate::hour(rtab$UTC_datetime) > 8)
+
+ndvi_agg <- aggregate(x = rtab,
+                      by = list(cut(as.POSIXct(rtab$UTC_datetime,tz = "UTC"),
+                                    timetoagg)), FUN = mean)
+
+ndvi_agg <- ndvi_agg |> dplyr::mutate(day = DOY%/%1,
+                                      Hr1 = lubridate::hour(as.character(Group.1)),
+                                      Mn1 = lubridate::minute(as.character(Group.1)))
+
+ndvi_agg <- ndvi_agg[,-7] 
+
+comp_ndvi_gpp <- dplyr::semi_join(ndvi_agg,gpp_table)
+
+```
 
 And Finaly the plots to see the changes
 
 ## **NDVI**
 
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
-ndvi |>
+mean_ndvi |>
   ggplot2::ggplot(ggplot2::aes(x=day, y=ndvi))+
   ggplot2::geom_jitter()+
-  ggplot2::geom_point(data = subset(ndvi, ndvi< 0.9),
+  ggplot2::geom_point(data = subset(mean_ndvi, ndvi< 0.9),
                       ggplot2::aes(x=day,y=ndvi)
                       , colour="red")
 
@@ -506,10 +528,10 @@ ndvi |>
 ## **NDVI Red Edge**
 
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
-ndvi_r |>
+mean_ndvi_r |>
   ggplot2::ggplot(ggplot2::aes(x=day, y=ndvi_r))+
   ggplot2::geom_jitter()+
-  ggplot2::geom_point(data = subset(ndvi_r, ndvi_r< 0.59),
+  ggplot2::geom_point(data = subset(mean_ndvi_r, ndvi_r< 0.59),
                       ggplot2::aes(x=day,y=ndvi_r)
                       , colour="red")
 
@@ -522,5 +544,21 @@ the following figure show to us, the days in the data-set that have problems and
 ```{r echo=FALSE, fig.cap="",fig.align='center',out.width = "1000px"}
 
 knitr::include_graphics("data/fig/Imagem1.png")
+
+```
+
+
+
+```{r,message=FALSE, error=FALSE, warning=FALSE}
+NDVI <- comp_ndvi_gpp$NDVI
+NDVI_R <- comp_ndvi_gpp$`NDVI Red`
+ndvi_df <- data.frame(NDVI,NDVI_R)
+df_final_sub <- cbind(df_final_sub,ndvi_df)
+
+df_tab <- df_final_sub |>
+  dplyr::filter(day != 171 & day !=177 & day !=188 & day != 189
+                & day !=199 & day != 200 & day != 201)
+
+readr::write_rds(df_tab,"data/base.rds")
 
 ```
