@@ -7,6 +7,8 @@ output: github_document
 
 The data are from the Fluox, and are already processed for the clear sky days, also the database are filtered for the DOY>=128, the bellow code was apply to be abble of uploading this data to github because the size of the first file was larger than 100Mb: 
 
+The time serie consist in observations on Alfafa crop during DOY 144 and 193
+
 ```{r, echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
 # 
 #namefile <- list.files("data-raw/spectra/", pattern="JB-009-ESA_F")
@@ -54,13 +56,16 @@ First we are gonna make the time table and made a mean for every 30 m
 
 ```{r, echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
 time_table <- cbind(ind_file,ori_tab)
+time_table <- time_table |> 
+  dplyr::filter(DOY >= 144 & DOY <=193)
+
 
 time_table <- time_table |>
   dplyr::filter(lubridate::hour(time_table$UTC_datetime) > 8)
 
 min_int<-"30 min" #step 
 sttime <- time_table$UTC_datetime[1] # start time of the serie
-endtime <- time_table$UTC_datetime[13577] #final time of the serie
+endtime <- time_table$UTC_datetime[8344] #final time of the serie
 
 
 ## Making the agreggation
@@ -147,7 +152,7 @@ for(i in 1:length(result)){
   }
 }
 
-row.names(fint) <- seq(1:377)
+row.names(fint) <- seq(1:208)
 fint <- as.data.frame(fint[-1,]) # the first observasation is the integral of wavelenght in function of it self
 
 colnames(fint) <- "Fint"
@@ -161,12 +166,12 @@ df_final <- cbind(df_final,fint)
 Before going plot the data, first we need another transformations to do a correlation plot for all the Fluoresce spectra
 
 ```{r}
-fint_t <- vector("numeric", length = 377)
-fint_t[2:377] <- t(fint)
+fint_t <- vector("numeric", length = 208)
+fint_t[2:208] <- t(fint)
 
 spectra_Table[683, ] <- fint_t
-gpp <- vector("numeric", length = 377)
-gpp[2:377] <- comp_gpp_f$GPP_DT_U95
+gpp <- vector("numeric", length = 208)
+gpp[2:208] <- comp_gpp_f$GPP_DT_U95
 spectra_Table[684, ] <- gpp
 
 for(i in 2:ncol(spectra_Table)){
@@ -228,8 +233,8 @@ Now we can subset the data frame for the most **importants wavelength**, `685nm`
 df_final_sub <- df_final |>
   dplyr::select(
     Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.09`,`720.07` ,`740.02`,`757.11`, `771.06`, Fint,
-    GPP_DT, GPP_DT_U95, GPP_DT_U50,GPP_DT_U05
+    `685.09`,`705.1`,`779.96` ,`740.02`,`757.11`, `771.06`, Fint,
+    GPP_DT, GPP_DT_U95
   ) |> 
   dplyr::glimpse()
 
@@ -292,7 +297,7 @@ With the `720` wavelength
 
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `779.96`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -302,7 +307,7 @@ df_final_sub |>
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 df_final_sub |>
   dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `779.96`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -349,7 +354,7 @@ df_final_sub |>
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `779.96`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggplot2::facet_wrap(~day, scales = "free")+
@@ -364,8 +369,7 @@ Detection of clounds using the incoming radiance at 750
 
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 
-for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
-           199,200,201,217,218,221,224,239,240)){
+for(i in c(145,146,161,171,177,181,182,183,187,188,189,190,191)){
   print(time_agg |>
           dplyr::filter(DOYdayfrac%/%1 == i) |>
           ggplot2::ggplot(ggplot2::aes(x=DOYdayfrac, y= L750_Wm2nm1sr1))+
@@ -510,6 +514,40 @@ comp_ndvi_gpp <- dplyr::semi_join(ndvi_agg,gpp_table)
 
 ```
 
+Calculatin the NIRv for latter calculate the `aPAR`
+
+```{r}
+t_rnir <- data.frame(t(rnir))
+names(t_rnir) <- round(as.numeric(t_rnir[1,]),2)
+t_rnir <- t_rnir[-1,]
+
+t_rnir <- cbind(ind_file,t_rnir)
+
+t_rnir <- t_rnir |>
+  dplyr::filter(lubridate::hour(UTC_datetime) > 8 & DOYdayfrac >= 144 & DOYdayfrac <=193)
+
+min_int<-"30 min"
+sttime <- t_rnir$UTC_datetime[1]
+endtime <- t_rnir$UTC_datetime[8344]
+
+timetoagg<-seq.POSIXt(from = as.POSIXct(sttime,tz = "UTC"),
+                      to = as.POSIXct(endtime,tz = "UTC"),
+                      by = min_int)
+
+nir_agg <- aggregate(x = t_rnir,
+                      by = list(cut(as.POSIXct(t_rnir$UTC_datetime,tz = "UTC"),
+                                    timetoagg)), FUN = mean)
+nir_agg <- nir_agg |>
+  dplyr::select(
+    Group.1,
+    `775`
+  )
+names(nir_agg)[2] <- "R775"
+
+nir_agg <- dplyr::semi_join(nir_agg,comp_ndvi_gpp)
+```
+
+
 And Finaly the plots to see the changes
 
 ## **NDVI**
@@ -552,12 +590,23 @@ knitr::include_graphics("data/fig/Imagem1.png")
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 NDVI <- comp_ndvi_gpp$NDVI
 NDVI_R <- comp_ndvi_gpp$`NDVI Red`
-ndvi_df <- data.frame(NDVI,NDVI_R)
+NIR = NDVI*nir_agg$R775
+ndvi_df <- data.frame(NDVI,NDVI_R, NIR)
 df_final_sub <- cbind(df_final_sub,ndvi_df)
 
 df_tab <- df_final_sub |>
   dplyr::filter(day != 171 & day !=177 & day !=188 & day != 189
                 & day !=199 & day != 200 & day != 201)
+
+
+df_tab <- df_tab |>
+  dplyr::mutate(
+    k1=584*sin(circular::rad(SZA)) - 88,
+    k2= 3.55424 - 1.15937*cos(circular::rad(SZA)),
+    aPAR= k1*sin(k2*NIR),
+    Fy= Fint/aPAR,
+    LUE=GPP_DT_U95/aPAR
+  )
 
 readr::write_rds(df_tab,"data/base.rds")
 

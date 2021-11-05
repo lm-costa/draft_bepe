@@ -8,6 +8,9 @@ days, also the database are filtered for the DOY&gt;=128, the bellow
 code was apply to be abble of uploading this data to github because the
 size of the first file was larger than 100Mb:
 
+The time serie consist in observations on Alfafa crop during DOY 144 and
+193
+
 ``` r
 # 
 #namefile <- list.files("data-raw/spectra/", pattern="JB-009-ESA_F")
@@ -55,13 +58,16 @@ First we are gonna make the time table and made a mean for every 30 m
 
 ``` r
 time_table <- cbind(ind_file,ori_tab)
+time_table <- time_table |> 
+  dplyr::filter(DOY >= 144 & DOY <=193)
+
 
 time_table <- time_table |>
   dplyr::filter(lubridate::hour(time_table$UTC_datetime) > 8)
 
 min_int<-"30 min" #step 
 sttime <- time_table$UTC_datetime[1] # start time of the serie
-endtime <- time_table$UTC_datetime[13577] #final time of the serie
+endtime <- time_table$UTC_datetime[8344] #final time of the serie
 
 
 ## Making the agreggation
@@ -147,7 +153,7 @@ for(i in 1:length(result)){
   }
 }
 
-row.names(fint) <- seq(1:377)
+row.names(fint) <- seq(1:208)
 fint <- as.data.frame(fint[-1,]) # the first observasation is the integral of wavelenght in function of it self
 
 colnames(fint) <- "Fint"
@@ -161,12 +167,12 @@ Before going plot the data, first we need another transformations to do
 a correlation plot for all the Fluoresce spectra
 
 ``` r
-fint_t <- vector("numeric", length = 377)
-fint_t[2:377] <- t(fint)
+fint_t <- vector("numeric", length = 208)
+fint_t[2:208] <- t(fint)
 
 spectra_Table[683, ] <- fint_t
-gpp <- vector("numeric", length = 377)
-gpp[2:377] <- comp_gpp_f$GPP_DT_U95
+gpp <- vector("numeric", length = 208)
+gpp[2:208] <- comp_gpp_f$GPP_DT_U95
 spectra_Table[684, ] <- gpp
 
 for(i in 2:ncol(spectra_Table)){
@@ -231,30 +237,29 @@ include for the `Day Time (DT)` observations
 df_final_sub <- df_final |>
   dplyr::select(
     Group.1, day, Hr1, L750_Wm2nm1sr1, SZA, PAR_Wm2,
-    `685.09`,`720.07` ,`740.02`,`757.11`, `771.06`, Fint,
-    GPP_DT, GPP_DT_U95, GPP_DT_U50,GPP_DT_U05
+    `685.09`,`705.1`,`779.96` ,`740.02`,`757.11`, `771.06`, Fint,
+    GPP_DT, GPP_DT_U95
   ) |> 
   dplyr::glimpse()
 ```
 
-    ## Rows: 376
-    ## Columns: 16
-    ## $ Group.1        <fct> 2018-05-12 09:00:12, 2018-05-12 09:30:12, 2018-05-12 10~
-    ## $ day            <dbl> 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, ~
+    ## Rows: 207
+    ## Columns: 15
+    ## $ Group.1        <fct> 2018-05-25 09:00:02, 2018-05-25 09:30:02, 2018-05-25 10~
+    ## $ day            <dbl> 145, 145, 145, 145, 145, 145, 145, 145, 145, 145, 145, ~
     ## $ Hr1            <int> 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 1~
-    ## $ L750_Wm2nm1sr1 <dbl> 0.30742885, 0.32451641, 0.33455608, 0.34120232, 0.34359~
-    ## $ SZA            <dbl> 34.95596, 30.81628, 27.45133, 25.35580, 24.71953, 25.69~
-    ## $ PAR_Wm2        <dbl> 364.37724, 387.53816, 403.78000, 413.90729, 417.90639, ~
-    ## $ `685.09`       <dbl> 1.0165314, 1.0772118, 1.0459857, 1.0797781, 1.0829513, ~
-    ## $ `720.07`       <dbl> 1.7525774, 1.8323982, 1.8706490, 1.9075834, 1.9054034, ~
-    ## $ `740.02`       <dbl> 3.981080, 4.131573, 4.304486, 4.375986, 4.355232, 4.310~
-    ## $ `757.11`       <dbl> 3.3229948, 3.4471333, 3.5941525, 3.6664658, 3.6524350, ~
-    ## $ `771.06`       <dbl> 2.1862727, 2.2691116, 2.3591218, 2.4113347, 2.4044206, ~
-    ## $ Fint           <dbl> 228.78261, 238.46129, 245.18687, 250.34240, 249.73322, ~
-    ## $ GPP_DT         <dbl> 18.8, 19.5, 20.1, 20.5, 20.5, 20.5, 20.8, 19.3, 20.2, 1~
-    ## $ GPP_DT_U95     <dbl> 18.7, 19.4, 20.1, 20.5, 20.4, 20.5, 20.8, 19.2, 20.1, 1~
-    ## $ GPP_DT_U50     <dbl> 17.8, 18.5, 19.1, 19.5, 19.5, 19.6, 19.8, 18.3, 19.2, 1~
-    ## $ GPP_DT_U05     <dbl> 19.1, 19.8, 20.4, 20.7, 20.7, 20.8, 21.0, 19.6, 20.4, 1~
+    ## $ L750_Wm2nm1sr1 <dbl> 0.29679919, 0.31430288, 0.32663515, 0.33453771, 0.33726~
+    ## $ SZA            <dbl> 32.92583, 28.54777, 24.98358, 22.66306, 21.92419, 22.93~
+    ## $ PAR_Wm2        <dbl> 369.93567, 391.71895, 406.27653, 415.26607, 417.01186, ~
+    ## $ `685.09`       <dbl> 1.2308437, 1.3439059, 1.4053925, 1.4662777, 1.4739017, ~
+    ## $ `705.1`        <dbl> 1.5574706, 1.6609758, 1.7503835, 1.8034656, 1.8040760, ~
+    ## $ `779.96`       <dbl> 1.5097738, 1.5652948, 1.7294112, 1.7645806, 1.8263655, ~
+    ## $ `740.02`       <dbl> 4.334771, 4.471682, 4.948808, 5.048612, 5.246750, 5.469~
+    ## $ `757.11`       <dbl> 3.0777047, 3.1789153, 3.5247521, 3.5942228, 3.7366047, ~
+    ## $ `771.06`       <dbl> 1.9703019, 2.0396786, 2.2565206, 2.3006356, 2.3854447, ~
+    ## $ Fint           <dbl> 255.14553, 266.40490, 290.57136, 297.53778, 305.94678, ~
+    ## $ GPP_DT         <dbl> 24.2, 25.1, 25.9, 26.4, 26.7, 24.8, 24.7, 25.4, 26.1, 2~
+    ## $ GPP_DT_U95     <dbl> 25.1, 26.2, 27.1, 27.7, 28.1, 26.6, 26.6, 27.0, 27.4, 2~
 
 ``` r
 df_final_sub[,-c(1:3)] |> #excluding the time for the Pearson correlation 
@@ -312,7 +317,7 @@ With the `720` wavelength
 
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `779.96`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -324,7 +329,7 @@ df_final_sub |>
 ``` r
 df_final_sub |>
   dplyr::filter(Hr1 > 10 & Hr1 < 14) |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `779.96`))+
   ggplot2::geom_jitter(ggplot2::aes(colour=as.factor(day)))+
   ggplot2::geom_smooth(method = "lm")+
   ggpubr::stat_regline_equation(ggplot2::aes(
@@ -372,7 +377,7 @@ df_final_sub |>
 
 ``` r
 df_final_sub |> 
-  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `720.07`))+
+  ggplot2::ggplot(ggplot2::aes(x=GPP_DT_U95, y= `779.96`))+
   ggplot2::geom_point()+
   ggplot2::geom_smooth(method = "lm")+
   ggplot2::facet_wrap(~day, scales = "free")+
@@ -388,8 +393,7 @@ df_final_sub |>
 Detection of clounds using the incoming radiance at 750
 
 ``` r
-for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
-           199,200,201,217,218,221,224,239,240)){
+for(i in c(145,146,161,171,177,181,182,183,187,188,189,190,191)){
   print(time_agg |>
           dplyr::filter(DOYdayfrac%/%1 == i) |>
           ggplot2::ggplot(ggplot2::aes(x=DOYdayfrac, y= L750_Wm2nm1sr1))+
@@ -398,7 +402,7 @@ for(i in c(132,139,145,146,161,171,177,181,182,183,187,188,189,190,191,
   }
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-5.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-6.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-7.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-8.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-9.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-10.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-11.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-12.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-13.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-14.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-15.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-16.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-17.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-18.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-19.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-20.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-21.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-22.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-23.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-24.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-5.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-6.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-7.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-8.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-9.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-10.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-11.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-12.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-22-13.png)<!-- -->
 
 Here we are gonna see how the reflectance of the canopy are changing,
 and for this we are gonna use the NDVI and NDVI red-edge
@@ -535,6 +539,41 @@ comp_ndvi_gpp <- dplyr::semi_join(ndvi_agg,gpp_table)
 
     ## Joining, by = c("day", "Hr1", "Mn1")
 
+Calculatin the NIRv for latter calculate the `aPAR`
+
+``` r
+t_rnir <- data.frame(t(rnir))
+names(t_rnir) <- round(as.numeric(t_rnir[1,]),2)
+t_rnir <- t_rnir[-1,]
+
+t_rnir <- cbind(ind_file,t_rnir)
+
+t_rnir <- t_rnir |>
+  dplyr::filter(lubridate::hour(UTC_datetime) > 8 & DOYdayfrac >= 144 & DOYdayfrac <=193)
+
+min_int<-"30 min"
+sttime <- t_rnir$UTC_datetime[1]
+endtime <- t_rnir$UTC_datetime[8344]
+
+timetoagg<-seq.POSIXt(from = as.POSIXct(sttime,tz = "UTC"),
+                      to = as.POSIXct(endtime,tz = "UTC"),
+                      by = min_int)
+
+nir_agg <- aggregate(x = t_rnir,
+                      by = list(cut(as.POSIXct(t_rnir$UTC_datetime,tz = "UTC"),
+                                    timetoagg)), FUN = mean)
+nir_agg <- nir_agg |>
+  dplyr::select(
+    Group.1,
+    `775`
+  )
+names(nir_agg)[2] <- "R775"
+
+nir_agg <- dplyr::semi_join(nir_agg,comp_ndvi_gpp)
+```
+
+    ## Joining, by = "Group.1"
+
 And Finaly the plots to see the changes
 
 ## **NDVI**
@@ -548,7 +587,7 @@ mean_ndvi |>
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ## **NDVI Red Edge**
 
@@ -561,7 +600,7 @@ mean_ndvi_r |>
                       , colour="red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 # **Interpreting**
 
@@ -574,12 +613,23 @@ our analyses.
 ``` r
 NDVI <- comp_ndvi_gpp$NDVI
 NDVI_R <- comp_ndvi_gpp$`NDVI Red`
-ndvi_df <- data.frame(NDVI,NDVI_R)
+NIR = NDVI*nir_agg$R775
+ndvi_df <- data.frame(NDVI,NDVI_R, NIR)
 df_final_sub <- cbind(df_final_sub,ndvi_df)
 
 df_tab <- df_final_sub |>
   dplyr::filter(day != 171 & day !=177 & day !=188 & day != 189
                 & day !=199 & day != 200 & day != 201)
+
+
+df_tab <- df_tab |>
+  dplyr::mutate(
+    k1=584*sin(circular::rad(SZA)) - 88,
+    k2= 3.55424 - 1.15937*cos(circular::rad(SZA)),
+    aPAR= k1*sin(k2*NIR),
+    Fy= Fint/aPAR,
+    LUE=GPP_DT_U95/aPAR
+  )
 
 readr::write_rds(df_tab,"data/base.rds")
 ```
