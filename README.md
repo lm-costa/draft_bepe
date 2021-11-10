@@ -230,8 +230,8 @@ correl[-c(683:684),] |>
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Now we can subset the data frame for the most **importants wavelength**,
-`685nm`,`720nm`, `740nm` and `F integral`, and with the `GPP` data
-include for the `Day Time (DT)` observations
+`685nm`,`705nm`, `740nm`, `780nm`, `757nm`, `771nm` and `F integral`,
+and with the `GPP` data include for the `Day Time (DT)` observations
 
 ``` r
 df_final_sub <- df_final |>
@@ -313,7 +313,7 @@ df_final_sub |>
 
 ![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-With the `720` wavelength
+With the `780` wavelength
 
 ``` r
 df_final_sub |> 
@@ -390,7 +390,7 @@ df_final_sub |>
 
 # **Clounds and reflectance**
 
-Detection of clounds using the incoming radiance at 750
+Detection of clounds using the incoming radiance at 750 nm
 
 ``` r
 for(i in c(145,146,161,171,177,181,182,183,187,188,189,190,191)){

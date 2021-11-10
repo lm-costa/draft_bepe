@@ -227,7 +227,7 @@ correl[-c(683:684),] |>
   ggplot2::xlab(label="Fluorescence Spectra in nm")
 ```
 
-Now we can subset the data frame for the most **importants wavelength**, `685nm`,`720nm`, `740nm` and `F integral`, and with the `GPP` data include for the `Day Time (DT)` observations
+Now we can subset the data frame for the most **importants wavelength**, `685nm`,`705nm`, `740nm`, `780nm`, ` 757nm`, `771nm` and `F integral`, and with the `GPP` data include for the `Day Time (DT)` observations
 
 ```{r,echo=TRUE, warning=FALSE,cache=FALSE,message=FALSE}
 df_final_sub <- df_final |>
@@ -293,7 +293,7 @@ df_final_sub |>
   
 ```
 
-With the `720` wavelength
+With the `780` wavelength
 
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 df_final_sub |> 
@@ -365,7 +365,7 @@ df_final_sub |>
 
 # **Clounds and reflectance**
 
-Detection of clounds using the incoming radiance at 750
+Detection of clounds using the incoming radiance at 750 nm 
 
 ```{r,message=FALSE, error=FALSE, warning=FALSE}
 
