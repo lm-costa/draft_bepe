@@ -598,7 +598,11 @@ df_tab <- df_final_sub |>
   dplyr::filter(day != 171 & day !=177 & day !=188 & day != 189
                 & day !=199 & day != 200 & day != 201)
 
+```
 
+The calculos for the `aPAR` is based on the *Cesana, I., 2021* thesis *(not available yet)*
+
+```{r, echo=FALSE}
 df_tab <- df_tab |>
   dplyr::mutate(
     k1=584*sin(circular::rad(SZA)) - 88,
@@ -606,8 +610,12 @@ df_tab <- df_tab |>
     aPAR= k1*sin(k2*NIR),
     Fy= Fint/aPAR,
     LUE=GPP_DT_U95/aPAR
-  )
+  ) |> 
+  dplyr::glimpse()
+```
 
+Saving the data in a `.rds` file
+```{r}
 readr::write_rds(df_tab,"data/base.rds")
 
 ```
